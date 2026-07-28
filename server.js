@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
 const app = express();
@@ -24,13 +25,38 @@ app.get('/', (req, res) => {
   res.send('Radiant Intellectuals College Website API is Running...');
 });
 
+// Auto-seed Admin Function
+const seedAdmin = async () => {
+  try {
+    // Import your User model (adjust path if your model is named differently)
+    const User = require('./models/User'); 
+    const adminUsername = 'admin';
+    const rawPassword = 'RicoAdmin2026!';
+
+    const existingAdmin = await User.findOne({ username: adminUsername });
+    if (!existingAdmin) {
+      const hashedPassword = await bcrypt.hash(rawPassword, 10);
+      await User.create({ username: adminUsername, password: hashedPassword });
+      console.log('✅ Admin user auto-seeded successfully!');
+    } else {
+      console.log('ℹ️ Admin user already exists.');
+    }
+  } catch (err) {
+    console.error('❌ Auto-seed failed:', err.message);
+  }
+};
+
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI;
+const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI;
 
 mongoose
   .connect(MONGO_URI)
-  .then(() => {
+  .then(async () => {
     console.log(' Connected to MongoDB');
+    
+    // Seed admin on database connection
+    await seedAdmin();
+
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
     });
