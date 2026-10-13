@@ -1,24 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const News = require('../models/News');
 const auth = require('../middleware/auth');
 
-// Ensure uploads directory exists automatically
-const uploadDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+// Configure Cloudinary explicitly from environment variables
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-// Multer Storage Configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
+// Configure Multer Storage for Cloudinary
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'rico_news',
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
   },
 });
 
@@ -34,24 +34,22 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST /api/news - Add news/event with file upload (Admin)
+// POST /api/news - Add news/event with Cloudinary upload (Admin)
 router.post('/', [auth, upload.single('image')], async (req, res) => {
   try {
     const { title, category, date, summary, isUpcomingEvent, eventLocation } = req.body;
 
-    // Build image URL if file was attached
-    const imageUrl = req.file
-      ? `http://localhost:5000/uploads/${req.file.filename}`
-      : req.body.imageUrl || '';
+    // req.file.path automatically contains the Cloudinary HTTPS URL
+    const imageUrl = req.file ? req.file.path : req.body.imageUrl || '';
 
     const newArticle = new News({
       title,
-      category,
+      category: category || 'Announcement',
       date,
       summary,
       imageUrl,
       isUpcomingEvent: isUpcomingEvent === 'true' || isUpcomingEvent === true,
-      eventLocation,
+      eventLocation: eventLocation || '',
     });
 
     await newArticle.save();

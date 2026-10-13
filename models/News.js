@@ -4,25 +4,30 @@ const newsSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
+    trim: true,
   },
   category: {
     type: String,
-    enum: ['Announcement', 'Academic', 'Sports', 'Event'],
     default: 'Announcement',
+    trim: true,
   },
   date: {
     type: String, // e.g. "AUG 15, 2026"
     required: true,
+    trim: true,
   },
   summary: {
     type: String,
     required: true,
+    trim: true,
   },
   content: {
     type: String,
+    default: '',
   },
   imageUrl: {
     type: String,
+    default: '',
   },
   isUpcomingEvent: {
     type: Boolean,
@@ -30,6 +35,7 @@ const newsSchema = new mongoose.Schema({
   },
   eventLocation: {
     type: String,
+    default: '',
   },
   createdAt: {
     type: Date,
