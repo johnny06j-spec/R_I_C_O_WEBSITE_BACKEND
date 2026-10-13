@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const HomeSettings = require('../models/HomeSettings');
+const auth = require('../middleware/auth');
 
 // GET /api/home-settings
 router.get('/', async (req, res) => {
@@ -15,8 +16,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// PUT /api/home-settings
-router.put('/', async (req, res) => {
+// PUT /api/home-settings (Admin Protected)
+router.put('/', auth, async (req, res) => {
   try {
     let settings = await HomeSettings.findOne();
     if (!settings) {
