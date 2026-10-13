@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const HomeSettings = require('../models/HomeSettings');
 
-// GET /api/home-settings - Retrieve homepage content
+// GET /api/home-settings
 router.get('/', async (req, res) => {
   try {
     let settings = await HomeSettings.findOne();
@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// PUT /api/home-settings - Update homepage content (Admin)
+// PUT /api/home-settings
 router.put('/', async (req, res) => {
   try {
     let settings = await HomeSettings.findOne();
