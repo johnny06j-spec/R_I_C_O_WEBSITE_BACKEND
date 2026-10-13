@@ -19,6 +19,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/gallery', require('./routes/gallery'));
 app.use('/api/news', require('./routes/news'));
 app.use('/api/contact', require('./routes/contact'));
+app.use('/api/home-settings', require('./routes/homeSettings')); // Registered home settings route
 
 // Health Check
 app.get('/', (req, res) => {
@@ -28,7 +29,6 @@ app.get('/', (req, res) => {
 // Auto-seed Admin Function
 const seedAdmin = async () => {
   try {
-    // Import your User model (adjust path if your model is named differently)
     const User = require('./models/User'); 
     const adminUsername = 'admin';
     const rawPassword = 'RicoAdmin2026!';
