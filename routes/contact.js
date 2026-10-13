@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Contact = require('../models/Contact');
+const auth = require('../middleware/auth');
 
 // POST /api/contact - Submit contact form
 router.post('/', async (req, res) => {
@@ -15,7 +16,7 @@ router.post('/', async (req, res) => {
 });
 
 // GET /api/contact - Fetch messages for Admin
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
     const messages = await Contact.find().sort({ createdAt: -1 });
     res.json(messages);

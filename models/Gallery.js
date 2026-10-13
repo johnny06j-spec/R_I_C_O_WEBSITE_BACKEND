@@ -4,11 +4,12 @@ const gallerySchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
+    trim: true,
   },
   category: {
     type: String,
-    enum: ['Academic', 'Sports', 'Events', 'Campus'],
     default: 'Events',
+    trim: true,
   },
   imageUrl: {
     type: String,
@@ -16,6 +17,7 @@ const gallerySchema = new mongoose.Schema({
   },
   caption: {
     type: String,
+    default: '',
   },
   createdAt: {
     type: Date,

@@ -6,11 +6,11 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const Gallery = require('../models/Gallery');
 const auth = require('../middleware/auth');
 
-// Configure Cloudinary strictly using environment variables
+// Configure Cloudinary explicitly from environment variables
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 // Configure Multer Storage for Cloudinary
@@ -18,8 +18,8 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'rico_gallery',
-    allowed_formats: ['jpg', 'png', 'jpeg', 'webp']
-  }
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+  },
 });
 
 const upload = multer({ storage });
@@ -39,14 +39,19 @@ router.post('/', [auth, upload.single('image')], async (req, res) => {
   try {
     const { title, category, caption } = req.body;
 
-    // Cloudinary automatically returns the hosted secure HTTPS URL in req.file.path
     const imageUrl = req.file ? req.file.path : req.body.imageUrl;
 
     if (!imageUrl) {
       return res.status(400).json({ error: 'Please upload an image file' });
     }
 
-    const newItem = new Gallery({ title, category, imageUrl, caption });
+    const newItem = new Gallery({
+      title,
+      category: category || 'Events',
+      imageUrl,
+      caption,
+    });
+
     await newItem.save();
     res.status(201).json(newItem);
   } catch (err) {
