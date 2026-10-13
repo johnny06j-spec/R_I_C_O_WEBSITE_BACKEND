@@ -6,11 +6,11 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const Gallery = require('../models/Gallery');
 const auth = require('../middleware/auth');
 
-// Configure Cloudinary
+// Configure Cloudinary strictly using environment variables
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'dvaidjie7',
-  api_key: process.env.CLOUDINARY_API_KEY || '278625761173774',
-  api_secret: process.env.CLOUDINARY_API_SECRET || 'n33IEZPhmtekibqWOFvzmm0d1x8'
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 // Configure Multer Storage for Cloudinary
