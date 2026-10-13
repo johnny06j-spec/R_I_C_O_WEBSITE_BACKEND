@@ -19,7 +19,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/gallery', require('./routes/gallery'));
 app.use('/api/news', require('./routes/news'));
 app.use('/api/contact', require('./routes/contact'));
-app.use('/api/home-settings', require('./routes/home-Settings')); // Registered home settings route
+app.use('/api/home-settings', require('./routes/homeSettings')); // Fixed to match routes/homeSettings.js
 
 // Health Check
 app.get('/', (req, res) => {
